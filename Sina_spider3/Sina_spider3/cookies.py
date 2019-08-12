@@ -100,13 +100,14 @@ def get_cookie_from_weibo_cn(account, password):
                 if IDENTIFY == 1:
                     code_txt = raw_input("请查看路径下新生成的aa.png，然后输入验证码:")  # 手动输入验证码
                 else:
-                    from PIL import Image
-                    img = browser.find_element_by_xpath('//form[@method="post"]/div/img[@alt="请打开图片显示"]')
-                    x = img.location["x"]
-                    y = img.location["y"]
-                    im = Image.open("aa.png")
-                    im.crop((x, y, 100 + x, y + 22)).save("ab.png")  # 剪切出验证码
-                    code_txt = identify()  # 验证码打码平台识别
+                    # from PIL import Image
+                    # img = browser.find_element_by_xpath('//form[@method="post"]/div/img[@alt="请打开图片显示"]')
+                    # x = img.location["x"]
+                    # y = img.location["y"]
+                    # im = Image.open("aa.png")
+                    # im.crop((x, y, 100 + x, y + 22)).save("ab.png")  # 剪切出验证码
+                    # code_txt = identify()  # 验证码打码平台识别
+                    pass
                 code.send_keys(code_txt)
             except Exception, e:
                 pass
