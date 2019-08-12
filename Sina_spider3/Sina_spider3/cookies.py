@@ -29,7 +29,7 @@ logging.getLogger("selenium").setLevel(logging.WARNING)  # 将selenium的日志�
     建议买几十个，实际生产建议100+，微博反爬得厉害，太频繁了会出现302转移。
 """
 myWeiBo = [
-    ('13467408430', 'aogan571'),
+    ('411270210@qq.com', 'xiaoxiaoshaonian'),
 ]
 
 
@@ -87,30 +87,31 @@ def get_cookie_from_weibo_cn(account, password):
         while "微博" in browser.title and failure < 5:
             failure += 1
             browser.save_screenshot("aa.png")
-            username = browser.find_element_by_name("mobile")
+            # username = browser.find_element_by_name("mobile")
+            username = browser.find_element_by_id("loginName")
             username.clear()
             username.send_keys(account)
 
             psd = browser.find_element_by_xpath('//input[@type="password"]')
             psd.clear()
             psd.send_keys(password)
-            try:
-                code = browser.find_element_by_name("code")
-                code.clear()
-                if IDENTIFY == 1:
-                    code_txt = raw_input("请查看路径下新生成的aa.png，然后输入验证码:")  # 手动输入验证码
-                else:
-                    # from PIL import Image
-                    # img = browser.find_element_by_xpath('//form[@method="post"]/div/img[@alt="请打开图片显示"]')
-                    # x = img.location["x"]
-                    # y = img.location["y"]
-                    # im = Image.open("aa.png")
-                    # im.crop((x, y, 100 + x, y + 22)).save("ab.png")  # 剪切出验证码
-                    # code_txt = identify()  # 验证码打码平台识别
-                    pass
-                code.send_keys(code_txt)
-            except Exception, e:
-                pass
+            # try:
+            #     code = browser.find_element_by_name("code")
+            #     code.clear()
+            #     if IDENTIFY == 1:
+            #         code_txt = raw_input("请查看路径下新生成的aa.png，然后输入验证码:")  # 手动输入验证码
+            #     else:
+            #         # from PIL import Image
+            #         # img = browser.find_element_by_xpath('//form[@method="post"]/div/img[@alt="请打开图片显示"]')
+            #         # x = img.location["x"]
+            #         # y = img.location["y"]
+            #         # im = Image.open("aa.png")
+            #         # im.crop((x, y, 100 + x, y + 22)).save("ab.png")  # 剪切出验证码
+            #         # code_txt = identify()  # 验证码打码平台识别
+            #         pass
+            #     code.send_keys(code_txt)
+            # except Exception, e:
+            #     pass
 
             commit = browser.find_element_by_name("submit")
             commit.click()
