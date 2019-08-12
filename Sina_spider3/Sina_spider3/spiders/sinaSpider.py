@@ -17,8 +17,6 @@ from scrapy.selector import Selector
 from scrapy.http import Request
 from Sina_spider3.items import TweetsItem, InformationItem, RelationshipsItem
 
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class Spider(RedisSpider):
