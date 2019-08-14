@@ -34,6 +34,27 @@ class UserAgentNoLoginMiddleware(object):
         agent = random.choice(baiduUA)
         request.headers["User-Agent"] = agent
 
+class ProxyMiddleware(object):
+    """设置IP代理池"""
+
+    def __init__(self, settings, crawler):
+        RetryMiddleware.__init__(self, settings)
+        # self.rconn = settings.get("RCONN", redis.Redis(crawler.settings.get('PROXY_HOST', 'localhsot'), crawler.settings.get('PROXY_PORT', 6379)))
+        self.ip = crawler.settings.get("PROXIES")
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings, crawler)
+
+    def process_request(self, request, spider):
+        ip = random.choice(self.ip)
+        request.meta["proxy"] = ip
+
+    def process_exception(self,request,exception,spider):
+        if exception:
+            proxy = request.meta["proxy"].split("/")[-1]
+            logger.info("proxy地址:%s失效，删除该代理" % proxy)
+            self.ip.remove(proxy)
 
 class CookiesMiddleware(RetryMiddleware):
     """ 维护Cookie """

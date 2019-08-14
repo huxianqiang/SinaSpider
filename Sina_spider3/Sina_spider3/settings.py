@@ -14,6 +14,7 @@ DOWNLOADER_MIDDLEWARES = {
     "Sina_spider3.middleware.UserAgentLoginMiddleware": 401,     #模拟登录用这个
     # "Sina_spider3.middleware.UserAgentNoLoginMiddleware": 401,   #不登录时用这个
     "Sina_spider3.middleware.CookiesMiddleware": 402,
+    # "Sina_spider3.middleware.ProxyMiddleware": 543,
 }
 ITEM_PIPELINES = {
     "Sina_spider3.pipelines.MongoDBPipeline": 403,
@@ -25,19 +26,21 @@ SCHEDULER_QUEUE_CLASS = 'Sina_spider3.scrapy_redis.queue.SpiderSimpleQueue'
 
 # 种子队列的信息
 REDIS_URL = None
-REDIS_HOST = 'node0'
+REDIS_HOST = '172.20.10.9'
 REDIS_PORT = 6379
 
 # 去重队列的信息
 FILTER_URL = None
-FILTER_HOST = 'node0'
+FILTER_HOST = '172.20.10.9'
 FILTER_PORT = 6379
 FILTER_DB = 0
 
+#IP代理池
+PROXIES=[]
 
-DOWNLOAD_DELAY = 10  # 间隔时间
+DOWNLOAD_DELAY = 1  # 间隔时间
 # LOG_LEVEL = 'INFO'  # 日志级别
-CONCURRENT_REQUESTS = 1  # 默认为16
+CONCURRENT_REQUESTS = 4  # 默认为16
 # CONCURRENT_ITEMS = 1
 # CONCURRENT_REQUESTS_PER_IP = 1
 REDIRECT_ENABLED = False
