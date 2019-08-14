@@ -11,7 +11,8 @@ SPIDER_MODULES = ['Sina_spider3.spiders']
 NEWSPIDER_MODULE = 'Sina_spider3.spiders'
 
 DOWNLOADER_MIDDLEWARES = {
-    "Sina_spider3.middleware.UserAgentMiddleware": 401,
+    "Sina_spider3.middleware.UserAgentLoginMiddleware": 401,     #模拟登录用这个
+    # "Sina_spider3.middleware.UserAgentNoLoginMiddleware": 401,   #不登录时用这个
     "Sina_spider3.middleware.CookiesMiddleware": 402,
 }
 ITEM_PIPELINES = {
@@ -23,15 +24,16 @@ SCHEDULER_PERSIST = True
 SCHEDULER_QUEUE_CLASS = 'Sina_spider3.scrapy_redis.queue.SpiderSimpleQueue'
 
 # 种子队列的信息
-REDIE_URL = None
-REDIS_HOST = 'localhost'
+REDIS_URL = None
+REDIS_HOST = 'node0'
 REDIS_PORT = 6379
 
 # 去重队列的信息
 FILTER_URL = None
-FILTER_HOST = 'localhost'
+FILTER_HOST = 'node0'
 FILTER_PORT = 6379
 FILTER_DB = 0
+
 
 DOWNLOAD_DELAY = 10  # 间隔时间
 # LOG_LEVEL = 'INFO'  # 日志级别

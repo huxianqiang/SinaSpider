@@ -14,9 +14,11 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import logging
 from yumdama import identify
+import chardet
+
 
 IDENTIFY = 1  # 验证码输入方式:        1:看截图aa.png，手动输入     2:云打码
-COOKIE_GETWAY = 0 # 0 代表从https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18) 获取cookie   # 1 代表从https://weibo.cn/login/获取Cookie
+COOKIE_GETWAY = 1 # 0 代表从https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18) 获取cookie   # 1 代表从https://weibo.cn/login/获取Cookie
 dcap = dict(DesiredCapabilities.PHANTOMJS)  # PhantomJS需要使用老版手机的user-agent，不然验证码会无法通过
 dcap["phantomjs.page.settings.userAgent"] = (
     "Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
@@ -29,7 +31,7 @@ logging.getLogger("selenium").setLevel(logging.WARNING)  # 将selenium的日志�
     建议买几十个，实际生产建议100+，微博反爬得厉害，太频繁了会出现302转移。
 """
 myWeiBo = [
-    ('411270210@qq.com', 'xiaoxiaoshaonian'),
+    ('', ''),
 ]
 
 
@@ -43,7 +45,7 @@ def getCookie(account, password):
 
 def get_cookie_from_login_sina_com_cn(account, password):
     """ 获取一个账号的Cookie """
-    loginURL = "https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.18)"
+    loginURL = "https://login.sina.com.cn/sso/login.php?client=ssologin.js(v1.4.19)"
     username = base64.b64encode(account.encode("utf-8")).decode("utf-8")
     postData = {
         "entry": "sso",
@@ -79,19 +81,20 @@ def get_cookie_from_login_sina_com_cn(account, password):
 def get_cookie_from_weibo_cn(account, password):
     """ 获取一个账号的Cookie """
     try:
-        browser = webdriver.PhantomJS(desired_capabilities=dcap)
+        ops = webdriver.FirefoxOptions()
+        ops.set_headless()
+        browser = webdriver.Firefox(executable_path="/usr/local/bin/geckodriver",firefox_options=ops)
+        # browser.delete_all_cookies()
         browser.get("https://weibo.cn/login/")
         time.sleep(1)
-
         failure = 0
-        while "微博" in browser.title and failure < 5:
+        while "微博" in browser.title.encode("utf-8") and failure < 5:
             failure += 1
-            browser.save_screenshot("aa.png")
+            # browser.save_screenshot("aa.png")
             # username = browser.find_element_by_name("mobile")
             username = browser.find_element_by_id("loginName")
             username.clear()
             username.send_keys(account)
-
             psd = browser.find_element_by_xpath('//input[@type="password"]')
             psd.clear()
             psd.send_keys(password)
@@ -113,22 +116,24 @@ def get_cookie_from_weibo_cn(account, password):
             # except Exception, e:
             #     pass
 
-            commit = browser.find_element_by_name("submit")
+            commit = browser.find_element_by_id('loginAction')
             commit.click()
             time.sleep(3)
-            if "我的首页" not in browser.title:
+            if "我的首页" not in browser.title.encode("utf-8"):
+                logger.warning("title:%s" % browser.title)
                 time.sleep(4)
-            if '未激活微博' in browser.page_source:
+            if '未激活微博' in browser.page_source.encode("utf-8"):
                 print '账号未开通微博'
                 return {}
 
         cookie = {}
-        if "我的首页" in browser.title:
+        if "我的首页" in browser.title.encode("utf-8"):
             for elem in browser.get_cookies():
                 cookie[elem["name"]] = elem["value"]
             logger.warning("Get Cookie Success!( Account:%s )" % account)
         return json.dumps(cookie)
     except Exception, e:
+        logger.error(e)
         logger.warning("Failed %s!" % account)
         return ""
     finally:

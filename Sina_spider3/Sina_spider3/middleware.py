@@ -11,6 +11,7 @@ import redis
 import json
 import logging
 from user_agents import agents
+from user_agents import baiduUA
 from cookies import initCookie, updateCookie, removeCookie
 from scrapy.exceptions import IgnoreRequest
 from scrapy.utils.response import response_status_message
@@ -19,11 +20,18 @@ from scrapy.downloadermiddlewares.retry import RetryMiddleware
 logger = logging.getLogger(__name__)
 
 
-class UserAgentMiddleware(object):
+class UserAgentLoginMiddleware(object):
     """ 换User-Agent """
 
     def process_request(self, request, spider):
         agent = random.choice(agents)
+        request.headers["User-Agent"] = agent
+
+class UserAgentNoLoginMiddleware(object):
+    """ 换User-Agent """
+        
+    def process_request(self, request, spider):
+        agent = random.choice(baiduUA)
         request.headers["User-Agent"] = agent
 
 
