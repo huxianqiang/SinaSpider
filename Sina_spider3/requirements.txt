@@ -1,6 +1,6 @@
-lxml
-requests
-scrapy
-redis
-selenium
-pymongo
+lxml==4.4.1
+requests==2.22.0
+scrapy==1.7.3
+redis==3.3.5
+selenium==3.141.0
+pymongo==3.8.0
