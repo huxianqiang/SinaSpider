@@ -1,0 +1,6 @@
+lxml
+requests
+scrapy
+redis
+selenium
+pymongo
